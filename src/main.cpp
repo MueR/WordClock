@@ -100,6 +100,7 @@ void setup()
 void loop()
 {
     OTA::Handle();
+    WIFI::Handle();
 
     // Split time parts of last time into low/high DWORDS
     uint32_t time_l = _time.uptime >> 32;

@@ -8,6 +8,7 @@ class WIFI
 {
 public:
     static void Initialize();
+    static void Handle();
 private:
     static void Connect();
     static void UpdateStatus();

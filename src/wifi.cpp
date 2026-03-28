@@ -7,38 +7,40 @@
 
 const char* wifi_ssid = WIFI_SSID;
 const char* wifi_pass = WIFI_PASSWD;
+static uint32_t _reconnect_at = 0;
 
 WiFiEventHandler gotIpEventHandler, disconnectedEventHandler;
 
 void WIFI::Initialize() {
-
     WiFi.mode(WIFI_STA);
 
-    // Update status when we get a connection
     gotIpEventHandler = WiFi.onStationModeGotIP([](const WiFiEventStationModeGotIP& event)
     {
         Serial.printf("Station connected, IP: %s\n", WiFi.localIP().toString().c_str());
         WIFI::UpdateStatus();
     });
 
-    // Reconnect on disconnect
     disconnectedEventHandler = WiFi.onStationModeDisconnected([](const WiFiEventStationModeDisconnected& event)
     {
         Serial.println("Station disconnected");
         WIFI::UpdateStatus();
-        delay(5000);
-        Connect();
+        _reconnect_at = millis() + 5000;
     });
-    
-    // Now connect
+
     Connect();
 
-    // On initial startup we want to block before we return
     if (WiFi.waitForConnectResult(WIFI_CONNECTTIMEOUT) != WL_CONNECTED) {
         WIFI::UpdateStatus();
         Serial.println("Unable to connect");
         delay(5000);
         ESP.restart();
+    }
+}
+
+void WIFI::Handle() {
+    if (_reconnect_at != 0 && millis() >= _reconnect_at) {
+        _reconnect_at = 0;
+        Connect();
     }
 }
 
@@ -55,16 +57,8 @@ void WIFI::UpdateStatus() {
 }
 
 StatusBar::WIFI_STATUS WIFI::MapWiFiStatus(wl_status_t status) {
-  switch (status) {
-    // case WL_NO_SHIELD:          return StatusBar::WIFI_STATUS::WS_NONE;
-    // case WL_IDLE_STATUS:        return StatusBar::WIFI_STATUS::WS_NONE;
-    // case WL_NO_SSID_AVAIL:      return StatusBar::WIFI_STATUS::WS_NONE;
-    // case WL_SCAN_COMPLETED:     return StatusBar::WIFI_STATUS::WS_NONE;
-    case WL_CONNECTED:          return StatusBar::WIFI_STATUS::WS_CONNECTED;
-    // case WL_CONNECT_FAILED:     return StatusBar::WIFI_STATUS::WS_DISCONNECTED;
-    // case WL_CONNECTION_LOST:    return StatusBar::WIFI_STATUS::WS_DISCONNECTED;
-    // case WL_DISCONNECTED:       return StatusBar::WIFI_STATUS::WS_DISCONNECTED;
-    default:
-      return StatusBar::WIFI_STATUS::WS_DISCONNECTED;
-  }
+    switch (status) {
+        case WL_CONNECTED: return StatusBar::WIFI_STATUS::WS_CONNECTED;
+        default:           return StatusBar::WIFI_STATUS::WS_DISCONNECTED;
+    }
 }
