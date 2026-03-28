@@ -102,12 +102,16 @@ void WebConfig::Initialize() {
         if (serveFromLittleFS("/web" + path)) return;
 
         // Captive portal fallback: redirect everything else to the config page
-        server.sendHeader("Location", F("http://192.168.4.1/"));
+        IPAddress apIP = WiFi.softAPIP();
+        String portalUrl = String("http://") + apIP.toString() + "/";
+        server.sendHeader("Location", portalUrl);
         server.send(302);
     });
 
     server.begin();
-    Serial.println("Web config server started at http://192.168.4.1/");
+    IPAddress apIP = WiFi.softAPIP();
+    String portalUrl = String("http://") + apIP.toString() + "/";
+    Serial.println("Web config server started at " + portalUrl);
 }
 
 void WebConfig::Handle() {
