@@ -4,9 +4,12 @@
 #define CONFIG_H
 
 // Replace with your actual SSID and password:
-#define WIFI_SSID           "Your SSID here"
-#define WIFI_PASSWD         "WLAN AP password here"
-#define WIFI_CONNECTTIMEOUT 60000
+#define WIFI_SSID               "Your SSID here"
+#define WIFI_PASSWD             "WLAN AP password here"
+#define WIFI_CONNECTTIMEOUT     15000   // Per-attempt timeout in ms
+#define WIFI_AP_MAXATTEMPTS     3       // Failed attempts before entering AP mode
+#define WIFI_AP_SSID            "WordClock"
+#define WIFI_AP_PASSWD          "wordclock"
 
 #define OTA_HOSTNAME    "wordclock"
 #define OTA_PASSWORD    "my_ota_secret" // See example_env_secrets.ini / env_secrets.ini
