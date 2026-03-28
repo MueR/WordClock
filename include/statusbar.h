@@ -27,6 +27,7 @@ class StatusBar {
             WS_DISCONNECTED = CRGB::Red,
             WS_CONNECTING = CRGB::Yellow,
             WS_CONNECTED = CRGB::Green,
+            WS_AP = CRGB::Blue,
 
             WS_OTASTART = CRGB::Pink,
             WS_OTAPROGRESS = CRGB::Blue,

@@ -8,8 +8,11 @@ class WIFI
 {
 public:
     static void Initialize();
+    static void Handle();
+    static bool IsAPMode();
 private:
     static void Connect();
+    static void StartAP();
     static void UpdateStatus();
     static StatusBar::WIFI_STATUS MapWiFiStatus(wl_status_t status);
 };

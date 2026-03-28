@@ -89,7 +89,8 @@ void setup()
     Display::Initialize();
     WIFI::Initialize();
     Clock::Initialize();
-    NTPClock::Initialize();
+    if (!WIFI::IsAPMode())
+        NTPClock::Initialize();
     OTA::Initialize();
     // Temperature::Initialize(TEMPERATURE_XOFF, TEMPERATURE_YOFF, TEMPERATURE_COLD_COLOR, TEMPERATURE_WARM_COLOR);
 
@@ -100,6 +101,7 @@ void setup()
 void loop()
 {
     OTA::Handle();
+    WIFI::Handle();
 
     // Split time parts of last time into low/high DWORDS
     uint32_t time_l = _time.uptime >> 32;
