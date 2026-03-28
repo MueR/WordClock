@@ -2,7 +2,7 @@
 #define CLOCK_H
 
 #include <Arduino.h>
-#include <Display.h>
+#include <display.h>
 #include <ihandler.h>
 
 class Clock : public IHandler
